@@ -1,0 +1,25 @@
+{
+  "name": "mesh-gateway",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "scripts": {
+    "compose": "mesh-compose -o supergraph.graphql",
+    "start": "npx hive-gateway supergraph"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-hive/gateway": "1.13.0",
+    "@graphql-mesh/compose-cli": "1.4.2",
+    "@omnigraph/json-schema": "0.109.2",
+    "@omnigraph/openapi": "0.109.2",
+    "dotenv": "^16.4.7",
+    "graphql": "^16.8.1"
+  },
+  "devDependencies": {
+    "@graphql-hive/cli": "0.49.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,88 @@
+schema @link(url: "https://specs.apollo.dev/link/v1.0") @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@key", "@provides", "@requires", "@external", "@inaccessible", "@shareable", "@extends", "@tag", "@composeDirective"]) @link(url: "https://the-guild.dev/graphql/mesh/spec/v1.0", import: ["@transport", "@merge", "@extraSchemaDefinitionDirective"]) @composeDirective(name: "@transport") @composeDirective(name: "@merge") @composeDirective(name: "@extraSchemaDefinitionDirective") {
+  query: Query
+}
+
+directive @transport(kind: String!, subgraph: String!, location: String!, headers: [[String]], options: TransportOptions) repeatable on SCHEMA
+
+type Continent @key(fields: "code") @shareable {
+  code: ID!
+  countries: [Country!]!
+  name: String!
+}
+
+input ContinentFilterInput {
+  code: StringQueryOperatorInput
+}
+
+type Country @key(fields: "code") @shareable {
+  awsRegion: String!
+  capital: String
+  code: ID!
+  continent: Continent!
+  currencies: [String!]!
+  currency: String
+  emoji: String!
+  emojiU: String!
+  languages: [Language!]!
+  name(lang: String): String!
+  native: String!
+  phone: String!
+  phones: [String!]!
+  states: [State!]!
+  subdivisions: [Subdivision!]!
+}
+
+input CountryFilterInput {
+  code: StringQueryOperatorInput
+  continent: StringQueryOperatorInput
+  currency: StringQueryOperatorInput
+  name: StringQueryOperatorInput
+}
+
+type Language @key(fields: "code") @shareable {
+  code: ID!
+  name: String!
+  native: String!
+  rtl: Boolean!
+}
+
+input LanguageFilterInput {
+  code: StringQueryOperatorInput
+}
+
+type Query @shareable @extraSchemaDefinitionDirective(directives: {transport: [{kind: "http", subgraph: "Countries", location: "https://countries.trevorblades.com", options: {}}]}) {
+  continent(code: ID!): Continent @merge(subgraph: "Countries", keyField: "code", keyArg: "code")
+  continents(filter: ContinentFilterInput = {}): [Continent!]!
+  countries(filter: CountryFilterInput = {}): [Country!]!
+  country(code: ID!): Country @merge(subgraph: "Countries", keyField: "code", keyArg: "code")
+  language(code: ID!): Language @merge(subgraph: "Countries", keyField: "code", keyArg: "code")
+  languages(filter: LanguageFilterInput = {}): [Language!]!
+}
+
+type State @shareable {
+  code: String
+  country: Country!
+  name: String!
+}
+
+input StringQueryOperatorInput {
+  eq: String
+  in: [String!]
+  ne: String
+  nin: [String!]
+  regex: String
+}
+
+type Subdivision @shareable {
+  code: ID!
+  emoji: String
+  name: String!
+}
+
+scalar TransportOptions
+
+directive @merge(subgraph: String, argsExpr: String, keyArg: String, keyField: String, key: [String!], additionalArgs: String) repeatable on FIELD_DEFINITION
+
+scalar _DirectiveExtensions
+
+directive @extraSchemaDefinitionDirective(directives: _DirectiveExtensions) repeatable on OBJECT

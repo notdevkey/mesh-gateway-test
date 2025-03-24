@@ -1,0 +1,9 @@
+{
+  "registry": {
+    "accessToken": "<REGISTRY TOKEN>"
+  },
+  "cdn": {
+    "endpoint": "<CDN ENDPOINT>/supergraph",
+    "accessToken": "<CDN TOKEN>"
+  }
+}
